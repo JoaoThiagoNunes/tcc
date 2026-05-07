@@ -1,11 +1,7 @@
-"""
-Constants - Constantes da aplicação
-"""
 from enum import Enum
 
 
 class DocumentType(str, Enum):
-    """Tipos de documentos suportados"""
     NOTA_FISCAL = "nota_fiscal"
     COMPROVANTE_PAGAMENTO = "comprovante_pagamento"
     CONSULTA_CNPJ = "consulta_cnpj"
@@ -13,7 +9,6 @@ class DocumentType(str, Enum):
 
 
 class AnalysisStatus(str, Enum):
-    """Status da análise"""
     PENDING = "pending"
     PROCESSING = "processing"
     COMPLETED = "completed"

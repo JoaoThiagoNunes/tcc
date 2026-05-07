@@ -4,7 +4,8 @@ from typing import Optional
 
 class Settings(BaseSettings):
     # API Settings
-    app_name: str = "Pre Analysis Service"
+    app_name: str = "Aplicação de Reconhecimento Óptico de Caracteres" +\
+    "e Inteligência Artificial na automação de análise de documentos de Prestação de Contas"
     app_version: str = "1.0.0"
     debug: bool = False
     

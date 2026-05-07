@@ -1,6 +1,4 @@
-"""
-Pipeline - Orquestra o fluxo completo de análise
-"""
+
 from typing import Dict, Any
 from app.domain.entities.document import Document, DocumentType
 from app.domain.entities.analysis_result import AnalysisResult, AnalysisStatus

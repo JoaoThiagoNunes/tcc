@@ -17,6 +17,8 @@ openai==1.51.0
 # OCR
 pytesseract==0.3.13
 Pillow==11.0.0
+pypdf==5.4.0
+PyMuPDF==1.26.0
 
 # Logging
 python-json-logger==2.0.7

@@ -12,7 +12,7 @@ logger = get_logger(__name__)
 app = FastAPI(
     title=settings.app_name,
     version=settings.app_version,
-    description="Serviço de pré-análise de documentos usando IA",
+    description="TCC",
     docs_url="/docs",
     redoc_url="/redoc"
 )
@@ -32,21 +32,18 @@ app.include_router(routes.router)
 
 @app.on_event("startup")
 async def startup_event():
-    """Eventos de inicialização"""
     logger.info(f"Iniciando {settings.app_name} v{settings.app_version}")
 
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    """Eventos de encerramento"""
     logger.info("Encerrando aplicação")
 
 
 @app.get("/")
 async def root():
-    """Endpoint raiz"""
     return {
-        "message": f"Bem-vindo ao {settings.app_name}",
+        "message": f"{settings.app_name}",
         "version": settings.app_version,
         "docs": "/docs"
     }

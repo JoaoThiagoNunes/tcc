@@ -23,11 +23,14 @@ class AnalysisResponse(BaseModel):
     document_id: str
     document_type: Optional[DocumentType] = None
     analysis_result: Optional[Dict[str, Any]] = None
+    classification_confidence: Optional[float] = None
+    classification_reason: Optional[str] = None
+    classification_scores: Optional[Dict[str, float]] = None
     errors: Optional[List[str]] = None
     created_at: datetime = datetime.now()
+    text: str
 
 
 class ProcessRequest(BaseModel):
-    """Requisição de processamento"""
     document_id: str
     metadata: Optional[Dict[str, Any]] = None
