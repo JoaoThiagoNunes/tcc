@@ -91,7 +91,7 @@ pytest tests/
 ## 📋 Funcionalidades
 
 - **Classificação de Documentos**: Identifica automaticamente o tipo de documento
-- **OCR**: Extração de texto de imagens e PDFs
+- **OCR**: Extração de texto de imagens e PDFs com pipeline de qualidade, pré-processamento, validação de confiança e retry inteligente
 - **Análise com IA**: Análise estruturada usando OpenAI
 - **Validação por Regras**: Aplicação de regras de negócio
 - **Pipeline Completo**: Orquestração de todo o fluxo de análise
