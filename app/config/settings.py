@@ -11,10 +11,7 @@ class Settings(BaseSettings):
     
     # OpenAI Settings
     openai_api_key: Optional[str] = None
-    openai_model: str = "gpt-4o-mini"
-    
-    # Database Settings
-    database_url: Optional[str] = "sqlite:///./pre_analysis.db"
+    openai_model: str = "gpt-5-nano"
     
     # Logging Settings
     log_level: str = "INFO"

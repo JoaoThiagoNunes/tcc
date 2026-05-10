@@ -8,8 +8,6 @@ from app.domain.rules_engine.base_rules import RulesEngine
 from app.infrastructure.logging.logger import get_logger
 
 logger = get_logger(__name__)
-
-
 class AnalysisPipeline:
     def __init__(self):
         self.analyzers = {

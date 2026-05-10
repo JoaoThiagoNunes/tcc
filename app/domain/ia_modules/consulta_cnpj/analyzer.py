@@ -4,8 +4,6 @@ from app.infrastructure.external.openai_client import OpenAIClient
 from app.infrastructure.logging.logger import get_logger
 
 logger = get_logger(__name__)
-
-
 class ConsultaCNPJAnalyzer:
     def __init__(self):
         self.openai_client = OpenAIClient()

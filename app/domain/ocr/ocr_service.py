@@ -4,16 +4,12 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 from statistics import mean
-
 import pytesseract
 from PIL import Image, ImageChops, ImageEnhance, ImageFilter, ImageOps, ImageSequence, ImageStat
-
 from app.domain.entities.document import Document
 from app.infrastructure.logging.logger import get_logger
 
 logger = get_logger(__name__)
-
-
 @dataclass
 class OCRQualityProfile:
     width: int
@@ -26,7 +22,6 @@ class OCRQualityProfile:
     high_noise: bool
     likely_skewed: bool
 
-
 @dataclass
 class OCRPipelineStrategy:
     name: str
@@ -36,7 +31,6 @@ class OCRPipelineStrategy:
     threshold_bias: int
     psm_sequence: list[int]
     allow_invert_retry: bool
-
 
 class OCRService:
     RETRY_CONFIDENCE_THRESHOLD = 0.45

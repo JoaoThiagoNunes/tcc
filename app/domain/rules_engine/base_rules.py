@@ -1,23 +1,13 @@
-"""
-Base Rules Engine - Motor de regras de negócio
-"""
 from typing import Dict, Any
 from app.domain.entities.document import Document, DocumentType
 from app.infrastructure.logging.logger import get_logger
 
 logger = get_logger(__name__)
-
-
 class RulesEngine:
-    """Motor de regras de negócio"""
-
     def _default_result(self) -> Dict[str, Any]:
         return {"valid": True, "violations": [], "checks": []}
 
     async def apply_rules(self, document: Document, ai_result: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Aplica regras de negócio baseadas no tipo de documento
-        """
         try:
             logger.info(f"Aplicando regras para documento: {document.id}")
 

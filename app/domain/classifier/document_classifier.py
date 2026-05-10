@@ -7,15 +7,12 @@ from app.domain.entities.document import Document, DocumentType
 from app.infrastructure.logging.logger import get_logger
 
 logger = get_logger(__name__)
-
-
 @dataclass
 class ClassificationResult:
     label: DocumentType
     confidence: float
     reason: str
     scores: Dict[DocumentType, float]
-
 
 class DocumentClassifier:
     ACCEPT_THRESHOLD = 0.75

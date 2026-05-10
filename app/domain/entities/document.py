@@ -10,7 +10,6 @@ class DocumentType(str, Enum):
     CONSULTA_CNPJ = "consulta_cnpj"
     UNKNOWN = "unknown"
 
-
 @dataclass
 class Document:
     id: str

@@ -1,13 +1,8 @@
-"""
-Consulta CNPJ Rules - Regras para consulta de CNPJ
-"""
 from typing import Dict, Any
 from app.domain.entities.document import Document
 
 
 class ConsultaCNPJRules:
-    """Regras de validação para consultas de CNPJ"""
-
     async def validate(self, document: Document, ai_result: Dict[str, Any]) -> Dict[str, Any]:
         extracted_data = ai_result.get("extracted_data", {})
         violations = []

@@ -1,12 +1,10 @@
 from enum import Enum
 
-
 class DocumentType(str, Enum):
     NOTA_FISCAL = "nota_fiscal"
     COMPROVANTE_PAGAMENTO = "comprovante_pagamento"
     CONSULTA_CNPJ = "consulta_cnpj"
     UNKNOWN = "unknown"
-
 
 class AnalysisStatus(str, Enum):
     PENDING = "pending"
@@ -14,8 +12,6 @@ class AnalysisStatus(str, Enum):
     COMPLETED = "completed"
     FAILED = "failed"
 
-
-# Limites e configurações
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10MB
 ALLOWED_MIME_TYPES = [
     "application/pdf",
@@ -24,6 +20,5 @@ ALLOWED_MIME_TYPES = [
     "image/tiff"
 ]
 
-# Timeouts
 OCR_TIMEOUT = 60  # segundos
 AI_ANALYSIS_TIMEOUT = 120  # segundos

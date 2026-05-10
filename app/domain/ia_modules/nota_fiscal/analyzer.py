@@ -5,8 +5,6 @@ from app.infrastructure.logging.logger import get_logger
 import json
 
 logger = get_logger(__name__)
-
-
 class NotaFiscalAnalyzer:
     def __init__(self):
         self.openai_client = OpenAIClient()

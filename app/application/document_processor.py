@@ -5,8 +5,6 @@ from app.domain.entities.analysis_result import AnalysisResult, AnalysisStatus
 from app.infrastructure.logging.logger import get_logger
 
 logger = get_logger(__name__)
-
-
 class DocumentProcessor:
     def __init__(self):
         self.classifier = DocumentClassifier()

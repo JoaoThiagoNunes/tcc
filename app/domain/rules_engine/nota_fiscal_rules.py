@@ -1,22 +1,12 @@
-"""
-Nota Fiscal Rules - Regras de validação para notas fiscais
-"""
 from typing import Dict, Any, List
 from app.domain.entities.document import Document
 from app.infrastructure.logging.logger import get_logger
 
 logger = get_logger(__name__)
-
-
 class NotaFiscalRules:
-    """Regras de validação para notas fiscais"""
-    
     async def validate(self, document: Document, ai_result: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Valida a nota fiscal conforme regras de negócio
-        """
         violations = []
-        
+
         # Validar campos obrigatórios
         extracted_data = ai_result.get("extracted_data", {})
         
@@ -49,7 +39,6 @@ class NotaFiscalRules:
         }
     
     def _validate_cnpj(self, cnpj: str) -> bool:
-        """Valida formato básico de CNPJ"""
         # Remove caracteres não numéricos
         cnpj = ''.join(filter(str.isdigit, cnpj))
         return len(cnpj) == 14

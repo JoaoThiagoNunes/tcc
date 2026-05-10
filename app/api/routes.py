@@ -1,7 +1,6 @@
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 from uuid import uuid4
-
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from app.application.document_processor import DocumentProcessor
 from app.domain.entities.document import Document
