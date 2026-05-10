@@ -10,7 +10,6 @@ from . import schemas
 router = APIRouter(tags=["Processamento do Documento"])
 processor = DocumentProcessor()
 
-
 async def _build_document(upload_file: UploadFile) -> Document:
     file_bytes = await upload_file.read()
     suffix = Path(upload_file.filename or "upload.bin").suffix

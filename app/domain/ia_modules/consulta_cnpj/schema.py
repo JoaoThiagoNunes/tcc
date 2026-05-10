@@ -1,6 +1,3 @@
-"""
-Schema para análise de Consulta CNPJ
-"""
 from typing import Dict, Any
 
 CONSULTA_CNPJ_SCHEMA: Dict[str, Any] = {

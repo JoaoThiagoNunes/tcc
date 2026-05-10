@@ -1,6 +1,3 @@
-"""
-Document Entity - Entidade de domínio para documentos
-"""
 from dataclasses import dataclass, field
 from typing import Optional
 from datetime import datetime
@@ -8,7 +5,6 @@ from enum import Enum
 
 
 class DocumentType(str, Enum):
-    """Tipos de documentos"""
     NOTA_FISCAL = "nota_fiscal"
     COMPROVANTE_PAGAMENTO = "comprovante_pagamento"
     CONSULTA_CNPJ = "consulta_cnpj"
@@ -17,7 +13,6 @@ class DocumentType(str, Enum):
 
 @dataclass
 class Document:
-    """Entidade de documento"""
     id: str
     filename: str
     file_path: str
@@ -29,7 +24,6 @@ class Document:
     metadata: dict = field(default_factory=dict)
     
     def __post_init__(self):
-        """Validações pós-inicialização"""
         if not self.id:
             raise ValueError("Document ID é obrigatório")
         if not self.filename:

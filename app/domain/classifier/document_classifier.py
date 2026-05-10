@@ -206,12 +206,6 @@ class DocumentClassifier:
         return completed
 
     async def classify(self, document: Document) -> ClassificationResult:
-        """
-        Classifica o tipo de documento baseado em:
-        - Nome do arquivo
-        - Conteúdo (se disponível)
-        - Metadados
-        """
         try:
             filename = document.filename if isinstance(document.filename, str) else ""
             logger.info(f"Classificando documento: {filename}")

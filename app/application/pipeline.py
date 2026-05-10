@@ -1,4 +1,3 @@
-
 from typing import Dict, Any
 from app.domain.entities.document import Document, DocumentType
 from app.domain.entities.analysis_result import AnalysisResult, AnalysisStatus
@@ -12,8 +11,6 @@ logger = get_logger(__name__)
 
 
 class AnalysisPipeline:
-    """Pipeline de análise de documentos"""
-    
     def __init__(self):
         self.analyzers = {
             DocumentType.NOTA_FISCAL: NotaFiscalAnalyzer(),
@@ -31,19 +28,23 @@ class AnalysisPipeline:
         """
         try:
             logger.info(f"Executando pipeline para documento: {document.id}")
-            
-            # Obter analyzer apropriado
+
             analyzer = self.analyzers.get(document.type)
             if not analyzer:
-                raise ValueError(f"Analyzer não encontrado para tipo: {document.type}")
-            
-            # Executar análise com IA
+                error_msg = f"Analyzer não encontrado para tipo: {document.type}"
+                logger.error(error_msg)
+                return AnalysisResult(
+                    document_id=document.id,
+                    document_type=document.type.value if document.type else "unknown",
+                    ai_analysis=None,
+                    rules_validation=None,
+                    status=AnalysisStatus.FAILED,
+                    errors=[error_msg],
+                )
+
             ai_result = await analyzer.analyze(document)
-            
-            # Aplicar regras de negócio
             rules_result = await self.rules_engine.apply_rules(document, ai_result)
-            
-            # Combinar resultados
+
             result = AnalysisResult(
                 document_id=document.id,
                 document_type=document.type.value if document.type else "unknown",
@@ -51,9 +52,17 @@ class AnalysisPipeline:
                 rules_validation=rules_result,
                 status=AnalysisStatus.COMPLETED
             )
-            
+
             return result
-            
+
         except Exception as e:
-            logger.error(f"Erro no pipeline para documento {document.id}: {str(e)}")
-            raise
+            error_msg = str(e)
+            logger.error(f"Erro no pipeline para documento {document.id}: {error_msg}")
+            return AnalysisResult(
+                document_id=document.id,
+                document_type=document.type.value if document.type else "unknown",
+                ai_analysis=None,
+                rules_validation=None,
+                status=AnalysisStatus.FAILED,
+                errors=[error_msg],
+            )

@@ -1,6 +1,3 @@
-"""
-Nota Fiscal Analyzer - Análise de notas fiscais usando IA
-"""
 from typing import Dict, Any
 from app.domain.entities.document import Document
 from app.infrastructure.external.openai_client import OpenAIClient
@@ -11,20 +8,15 @@ logger = get_logger(__name__)
 
 
 class NotaFiscalAnalyzer:
-    """Analisador de notas fiscais usando IA"""
-    
     def __init__(self):
         self.openai_client = OpenAIClient()
         self.schema = self._load_schema()
         self.prompt = self._load_prompt()
     
     def _load_schema(self) -> Dict[str, Any]:
-        """Carrega o schema de validação"""
-        # TODO: Carregar de schema.py
         return {}
     
     def _load_prompt(self) -> str:
-        """Carrega o prompt de análise"""
         try:
             with open("app/domain/ia_modules/nota_fiscal/prompt.txt", "r", encoding="utf-8") as f:
                 return f.read()
@@ -33,23 +25,23 @@ class NotaFiscalAnalyzer:
             return "Analise a nota fiscal e extraia as informações relevantes."
     
     async def analyze(self, document: Document) -> Dict[str, Any]:
-        """
-        Analisa a nota fiscal usando IA
-        """
         try:
             logger.info(f"Analisando nota fiscal: {document.id}")
-            
-            # TODO: Implementar análise com OpenAI/outro modelo
-            # result = await self.openai_client.analyze(
-            #     text=document.extracted_text,
-            #     prompt=self.prompt,
-            #     schema=self.schema
-            # )
-            
+
+            if not document.extracted_text:
+                raise ValueError("Documento sem texto extraído para análise")
+
+            response = await self.openai_client.analyze(
+                text=document.extracted_text,
+                prompt=self.prompt,
+                schema=self.schema,
+            )
+
             return {
                 "document_type": "nota_fiscal",
-                "extracted_data": {},
-                "confidence": 0.0
+                "extracted_data": response.get("extracted_data", {}),
+                "confidence": float(response.get("confidence", 0.0)),
+                "raw_response": response.get("raw_response", response),
             }
             
         except Exception as e:

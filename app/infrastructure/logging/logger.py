@@ -1,6 +1,3 @@
-"""
-Logger - Configuração de logging
-"""
 import logging
 import sys
 from pathlib import Path
@@ -12,9 +9,6 @@ LOG_DIR.mkdir(exist_ok=True)
 
 
 def get_logger(name: str) -> logging.Logger:
-    """
-    Retorna um logger configurado
-    """
     logger = logging.getLogger(name)
     
     if logger.handlers:

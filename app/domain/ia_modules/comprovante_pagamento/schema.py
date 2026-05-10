@@ -1,6 +1,3 @@
-"""
-Schema para análise de Comprovante de Pagamento
-"""
 from typing import Dict, Any
 
 COMPROVANTE_PAGAMENTO_SCHEMA: Dict[str, Any] = {

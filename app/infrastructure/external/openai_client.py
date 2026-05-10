@@ -1,6 +1,3 @@
-"""
-OpenAI Client - Cliente para integração com OpenAI
-"""
 from typing import Dict, Any, Optional
 from app.config.settings import Settings
 from app.infrastructure.logging.logger import get_logger
@@ -9,8 +6,6 @@ logger = get_logger(__name__)
 
 
 class OpenAIClient:
-    """Cliente para integração com OpenAI"""
-    
     def __init__(self, settings: Optional[Settings] = None):
         self.settings = settings or Settings()
         # TODO: Inicializar cliente OpenAI
@@ -22,9 +17,6 @@ class OpenAIClient:
         prompt: str,
         schema: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
-        """
-        Analisa texto usando OpenAI com structured output
-        """
         try:
             logger.info("Analisando texto com OpenAI")
             

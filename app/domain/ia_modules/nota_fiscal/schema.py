@@ -1,6 +1,3 @@
-"""
-Schema para análise de Nota Fiscal
-"""
 from typing import Dict, Any
 
 NOTA_FISCAL_SCHEMA: Dict[str, Any] = {
