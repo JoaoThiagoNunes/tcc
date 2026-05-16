@@ -19,10 +19,12 @@ class AnalysisResponse(BaseModel):
     status: AnalysisStatus
     document_id: str
     document_type: Optional[DocumentType] = None
-    analysis_result: Optional[Dict[str, Any]] = None
+    field_extraction: Optional[Dict[str, Any]] = None
+    rules_validation: Optional[Dict[str, Any]] = None
     classification_confidence: Optional[float] = None
     classification_reason: Optional[str] = None
     classification_scores: Optional[Dict[str, float]] = None
+    warnings: Optional[List[str]] = None
     errors: Optional[List[str]] = None
     created_at: datetime = datetime.now()
     text: str

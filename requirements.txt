@@ -7,13 +7,6 @@ python-multipart==0.0.9
 pydantic==2.9.2
 pydantic-settings==2.5.2
 
-# Banco de dados
-sqlalchemy==2.0.36
-alembic==1.13.2
-
-# OpenAI
-openai==1.51.0
-
 # OCR
 pytesseract==0.3.13
 Pillow==11.0.0

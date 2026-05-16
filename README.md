@@ -1,122 +1,82 @@
 # Pre Analysis Service
 
-Serviço de pré-análise de documentos usando IA, construído com FastAPI seguindo arquitetura em camadas.
+Serviço de pré-análise de documentos de Prestação de Contas usando OCR e um motor de regras, com FastAPI em camadas.
 
-## 📁 Estrutura do Projeto
+## Arquitetura (fluxo)
 
 ```
-pre_analysis_service/
-│
-├── app/
-│   ├── main.py                  # Inicialização da API
-│   ├── api/                      # Camada de entrada (controllers)
-│   ├── application/              # Orquestração
-│   ├── domain/                   # Lógica de negócio
-│   │   ├── classifier/          # Classificação de documentos
-│   │   ├── ocr/                 # Extração de texto
-│   │   ├── ia_modules/          # Módulos de IA por tipo
-│   │   ├── rules_engine/        # Motor de regras
-│   │   └── entities/            # Entidades de domínio
-│   ├── infrastructure/          # Infraestrutura
-│   │   ├── database/            # Modelos e repositórios
-│   │   ├── logging/             # Sistema de logs
-│   │   └── external/            # Serviços externos
-│   └── config/                  # Configurações
-│
-├── tests/                       # Testes
-├── docker/                      # Configuração Docker
-└── logs/                        # Logs da aplicação
+HTTP (upload) → Orquestrador → OCR + Classificador → Extratores (texto / regex) → Motor de regras → Resposta da pré-análise
 ```
 
-## 🚀 Instalação
+- **OCR**: extração de texto (imagens, PDF escaneado; PDF textual via camada de leitura).
+- **Classificador**: infere o tipo de documento a partir do nome do arquivo e do texto.
+- **Extratores**: convertem o texto OCR em campos estruturados **sem modelos de IA** (heurísticas / regex — expansível no TCC).
+- **Motor de regras**: validações por tipo de documento.
 
-### Pré-requisitos
+## Estrutura do projeto
+
+```
+app/
+├── api/                 # Rotas HTTP
+├── application/         # Orquestrador + pipeline extração + regras
+├── domain/
+│   ├── classifier/
+│   ├── extraction/      # Parsers determinísticos por tipo
+│   ├── ocr/
+│   ├── rules_engine/
+│   └── entities/
+├── infrastructure/
+│   └── logging/
+└── config/
+tests/
+main.py
+```
+
+## Pré-requisitos
 
 - Python 3.11+
-- Tesseract OCR (para extração de texto)
+- Tesseract OCR instalado no sistema (`pytesseract`)
 
-### Instalação Local
+## Instalação local
 
-1. Clone o repositório
-2. Crie um ambiente virtual:
+1. Ambiente virtual:
+
 ```bash
 python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# ou
-venv\Scripts\activate  # Windows
+venv\Scripts\activate
 ```
 
-3. Instale as dependências:
+2. Dependências:
+
 ```bash
 pip install -r requirements.txt
 ```
 
-4. Configure as variáveis de ambiente (crie um arquivo `.env`):
+3. Variáveis opcionais (`.env`):
+
 ```env
-OPENAI_API_KEY=your_api_key_here
 DEBUG=false
-DATABASE_URL=sqlite:///./pre_analysis.db
 LOG_LEVEL=INFO
 ```
 
-5. Execute a aplicação:
-```bash
-uvicorn app.main:app --reload
-```
-
-A API estará disponível em `http://localhost:8000`
-
-## 🐳 Docker
-
-### Build e execução com Docker Compose
+4. Subir a API:
 
 ```bash
-docker-compose -f docker/docker-compose.yml up --build
+uvicorn main:app --reload
 ```
 
-## 📚 Documentação da API
+Documentação: `http://localhost:8000/docs`
 
-Após iniciar a aplicação, acesse:
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
-
-## 🧪 Testes
-
-Execute os testes com:
+## Testes
 
 ```bash
 pytest tests/
 ```
 
-## 📋 Funcionalidades
+## Tipos de documento
 
-- **Classificação de Documentos**: Identifica automaticamente o tipo de documento
-- **OCR**: Extração de texto de imagens e PDFs com pipeline de qualidade, pré-processamento, validação de confiança e retry inteligente
-- **Análise com IA**: Análise estruturada usando OpenAI
-- **Validação por Regras**: Aplicação de regras de negócio
-- **Pipeline Completo**: Orquestração de todo o fluxo de análise
+- Nota fiscal  
+- Comprovante de pagamento  
+- Consulta CNPJ  
 
-## 🔧 Configuração
-
-As configurações podem ser ajustadas em:
-- `app/config/settings.py` - Configurações principais
-- `.env` - Variáveis de ambiente
-- `app/config/constants.py` - Constantes da aplicação
-
-## 📝 Tipos de Documentos Suportados
-
-- Nota Fiscal
-- Comprovante de Pagamento
-- Consulta CNPJ
-
-## 🤝 Contribuindo
-
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature
-3. Commit suas mudanças
-4. Push para a branch
-5. Abra um Pull Request
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT.
+As regras e os extratores podem ser refinados conforme cada layout real de documento.

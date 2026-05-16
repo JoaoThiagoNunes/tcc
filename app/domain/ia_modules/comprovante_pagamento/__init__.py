@@ -1,1 +1,0 @@
-# Comprovante Pagamento Analyzer

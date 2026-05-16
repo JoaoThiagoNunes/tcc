@@ -21,4 +21,4 @@ ALLOWED_MIME_TYPES = [
 ]
 
 OCR_TIMEOUT = 60  # segundos
-AI_ANALYSIS_TIMEOUT = 120  # segundos
+PRE_ANALYSIS_TIMEOUT = 120  # segundos (OCR + extração + regras)

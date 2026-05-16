@@ -3,8 +3,8 @@ from app.domain.entities.document import Document
 
 
 class ConsultaCNPJRules:
-    async def validate(self, document: Document, ai_result: Dict[str, Any]) -> Dict[str, Any]:
-        extracted_data = ai_result.get("extracted_data", {})
+    async def validate(self, document: Document, extraction_payload: Dict[str, Any]) -> Dict[str, Any]:
+        extracted_data = extraction_payload.get("extracted_data", {})
         violations = []
         checks = []
 

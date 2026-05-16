@@ -1,5 +1,5 @@
 """
-Testes para Pipeline de análise
+Testes para Pipeline de análise (extração + regras)
 """
 import pytest
 from app.application.pipeline import AnalysisPipeline
@@ -24,48 +24,47 @@ async def test_pipeline_execution_by_type_success():
     pipeline = AnalysisPipeline()
     document = _build_document(DocumentType.NOTA_FISCAL)
 
-    class AnalyzerStub:
-        async def analyze(self, doc: Document):
+    class ExtractorStub:
+        async def extract(self, doc: Document):
             return {
                 "document_type": doc.type.value,
                 "extracted_data": {"numero": "123"},
-                "confidence": 0.9,
-                "raw_response": {"ok": True},
+                "parser_confidence": 0.9,
             }
 
-    pipeline.analyzers[DocumentType.NOTA_FISCAL] = AnalyzerStub()
+    pipeline.extractors[DocumentType.NOTA_FISCAL] = ExtractorStub()
 
     result = await pipeline.execute(document)
     assert result.status == AnalysisStatus.COMPLETED
-    assert result.ai_analysis is not None
-    assert result.ai_analysis["document_type"] == DocumentType.NOTA_FISCAL.value
+    assert result.field_extraction is not None
+    assert result.field_extraction["document_type"] == DocumentType.NOTA_FISCAL.value
     assert result.rules_validation is not None
 
 
 @pytest.mark.asyncio
-async def test_pipeline_returns_failed_when_analyzer_missing():
+async def test_pipeline_returns_failed_when_extractor_missing():
     pipeline = AnalysisPipeline()
     document = _build_document(DocumentType.UNKNOWN)
 
     result = await pipeline.execute(document)
     assert result.status == AnalysisStatus.FAILED
     assert result.errors
-    assert "Analyzer não encontrado" in result.errors[0]
+    assert "Extrator não encontrado" in result.errors[0]
 
 
 @pytest.mark.asyncio
-async def test_pipeline_returns_failed_when_analyzer_raises():
+async def test_pipeline_returns_failed_when_extractor_raises():
     pipeline = AnalysisPipeline()
     document = _build_document(DocumentType.CONSULTA_CNPJ)
 
-    class AnalyzerStub:
-        async def analyze(self, doc: Document):
-            raise RuntimeError("falha no analyzer")
+    class ExtractorStub:
+        async def extract(self, doc: Document):
+            raise RuntimeError("falha no extrator")
 
-    pipeline.analyzers[DocumentType.CONSULTA_CNPJ] = AnalyzerStub()
+    pipeline.extractors[DocumentType.CONSULTA_CNPJ] = ExtractorStub()
     result = await pipeline.execute(document)
     assert result.status == AnalysisStatus.FAILED
-    assert "falha no analyzer" in result.errors[0]
+    assert "falha no extrator" in result.errors[0]
 
 
 @pytest.mark.asyncio
@@ -73,15 +72,15 @@ async def test_pipeline_returns_failed_when_rules_engine_raises():
     pipeline = AnalysisPipeline()
     document = _build_document(DocumentType.COMPROVANTE_PAGAMENTO)
 
-    class AnalyzerStub:
-        async def analyze(self, doc: Document):
-            return {"document_type": doc.type.value, "extracted_data": {}, "confidence": 0.5}
+    class ExtractorStub:
+        async def extract(self, doc: Document):
+            return {"document_type": doc.type.value, "extracted_data": {}, "parser_confidence": 0.5}
 
     class RulesEngineStub:
-        async def apply_rules(self, _document, _ai_result):
+        async def apply_rules(self, _document, _extraction_payload):
             raise RuntimeError("falha nas regras")
 
-    pipeline.analyzers[DocumentType.COMPROVANTE_PAGAMENTO] = AnalyzerStub()
+    pipeline.extractors[DocumentType.COMPROVANTE_PAGAMENTO] = ExtractorStub()
     pipeline.rules_engine = RulesEngineStub()
     result = await pipeline.execute(document)
     assert result.status == AnalysisStatus.FAILED

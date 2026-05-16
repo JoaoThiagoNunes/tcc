@@ -1,57 +1,58 @@
 from typing import Dict, Any
+
 from app.domain.entities.document import Document, DocumentType
 from app.domain.entities.analysis_result import AnalysisResult, AnalysisStatus
-from app.domain.ia_modules.nota_fiscal.analyzer import NotaFiscalAnalyzer
-from app.domain.ia_modules.comprovante_pagamento.analyzer import ComprovantePagamentoAnalyzer
-from app.domain.ia_modules.consulta_cnpj.analyzer import ConsultaCNPJAnalyzer
+from app.domain.extraction.nota_fiscal_extractor import NotaFiscalFieldExtractor
+from app.domain.extraction.comprovante_extractor import ComprovantePagamentoFieldExtractor
+from app.domain.extraction.consulta_cnpj_extractor import ConsultaCNPJFieldExtractor
 from app.domain.rules_engine.base_rules import RulesEngine
 from app.infrastructure.logging.logger import get_logger
 
 logger = get_logger(__name__)
+
+
 class AnalysisPipeline:
+    """Extração determinística de campos + motor de regras (pós-OCR)."""
+
     def __init__(self):
-        self.analyzers = {
-            DocumentType.NOTA_FISCAL: NotaFiscalAnalyzer(),
-            DocumentType.COMPROVANTE_PAGAMENTO: ComprovantePagamentoAnalyzer(),
-            DocumentType.CONSULTA_CNPJ: ConsultaCNPJAnalyzer()
+        self.extractors = {
+            DocumentType.NOTA_FISCAL: NotaFiscalFieldExtractor(),
+            DocumentType.COMPROVANTE_PAGAMENTO: ComprovantePagamentoFieldExtractor(),
+            DocumentType.CONSULTA_CNPJ: ConsultaCNPJFieldExtractor(),
         }
         self.rules_engine = RulesEngine()
-    
+
     async def execute(self, document: Document) -> AnalysisResult:
         """
-        Executa o pipeline completo:
-        1. Análise com IA específica do tipo de documento
-        2. Validação com regras de negócio
-        3. Geração do resultado final
+        1. Extrai campos do texto OCR conforme o tipo do documento
+        2. Valida com regras de negócio
         """
         try:
             logger.info(f"Executando pipeline para documento: {document.id}")
 
-            analyzer = self.analyzers.get(document.type)
-            if not analyzer:
-                error_msg = f"Analyzer não encontrado para tipo: {document.type}"
+            extractor = self.extractors.get(document.type)
+            if not extractor:
+                error_msg = f"Extrator não encontrado para tipo: {document.type}"
                 logger.error(error_msg)
                 return AnalysisResult(
                     document_id=document.id,
                     document_type=document.type.value if document.type else "unknown",
-                    ai_analysis=None,
+                    field_extraction=None,
                     rules_validation=None,
                     status=AnalysisStatus.FAILED,
                     errors=[error_msg],
                 )
 
-            ai_result = await analyzer.analyze(document)
-            rules_result = await self.rules_engine.apply_rules(document, ai_result)
+            extraction = await extractor.extract(document)
+            rules_result = await self.rules_engine.apply_rules(document, extraction)
 
-            result = AnalysisResult(
+            return AnalysisResult(
                 document_id=document.id,
                 document_type=document.type.value if document.type else "unknown",
-                ai_analysis=ai_result,
+                field_extraction=extraction,
                 rules_validation=rules_result,
-                status=AnalysisStatus.COMPLETED
+                status=AnalysisStatus.COMPLETED,
             )
-
-            return result
 
         except Exception as e:
             error_msg = str(e)
@@ -59,7 +60,7 @@ class AnalysisPipeline:
             return AnalysisResult(
                 document_id=document.id,
                 document_type=document.type.value if document.type else "unknown",
-                ai_analysis=None,
+                field_extraction=None,
                 rules_validation=None,
                 status=AnalysisStatus.FAILED,
                 errors=[error_msg],

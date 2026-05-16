@@ -14,7 +14,7 @@ class AnalysisResult:
     document_id: str
     document_type: str
     status: AnalysisStatus
-    ai_analysis: Optional[Dict[str, Any]] = None
+    field_extraction: Optional[Dict[str, Any]] = None
     rules_validation: Optional[Dict[str, Any]] = None
     errors: list = field(default_factory=list)
     warnings: list = field(default_factory=list)

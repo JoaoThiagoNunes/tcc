@@ -4,11 +4,10 @@ from app.infrastructure.logging.logger import get_logger
 
 logger = get_logger(__name__)
 class NotaFiscalRules:
-    async def validate(self, document: Document, ai_result: Dict[str, Any]) -> Dict[str, Any]:
+    async def validate(self, document: Document, extraction_payload: Dict[str, Any]) -> Dict[str, Any]:
         violations = []
 
-        # Validar campos obrigatórios
-        extracted_data = ai_result.get("extracted_data", {})
+        extracted_data = extraction_payload.get("extracted_data", {})
         
         if not extracted_data.get("numero"):
             violations.append("Número da nota fiscal é obrigatório")
