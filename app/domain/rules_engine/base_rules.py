@@ -1,10 +1,5 @@
 from typing import Dict, Any
-
 from app.domain.entities.document import Document, DocumentType
-from app.infrastructure.logging.logger import get_logger
-
-logger = get_logger(__name__)
-
 
 class RulesEngine:
     def _default_result(self) -> Dict[str, Any]:
@@ -12,8 +7,6 @@ class RulesEngine:
 
     async def apply_rules(self, document: Document, extraction_payload: Dict[str, Any]) -> Dict[str, Any]:
         try:
-            logger.info(f"Aplicando regras para documento: {document.id}")
-
             if document.type == DocumentType.NOTA_FISCAL:
                 from .nota_fiscal_rules import NotaFiscalRules
 
@@ -27,7 +20,6 @@ class RulesEngine:
 
                 rules = ConsultaCNPJRules()
             else:
-                logger.info("Tipo sem regra específica, aplicando validação neutra")
                 return self._default_result()
 
             result = await rules.validate(document, extraction_payload)
@@ -38,5 +30,4 @@ class RulesEngine:
             }
 
         except Exception as e:
-            logger.error(f"Erro ao aplicar regras: {str(e)}")
             return {"valid": False, "violations": [str(e)], "checks": []}

@@ -1,7 +1,4 @@
-"""Utilitários de parsing determinístico sobre texto produzido pelo OCR."""
-
 from __future__ import annotations
-
 import re
 from typing import List
 
@@ -16,7 +13,6 @@ DIGITS_LONG = re.compile(r"\d{44,48}")
 def normalize_cnpj_digits(raw: str) -> str:
     return "".join(ch for ch in raw if ch.isdigit())
 
-
 def find_cnpjs(text: str) -> List[str]:
     found: List[str] = []
     for m in CNPJ_MASKED.finditer(text):
@@ -27,10 +23,8 @@ def find_cnpjs(text: str) -> List[str]:
             found.append(digits)
     return found
 
-
 def find_dates(text: str) -> List[str]:
     return DATE_DD_MM_YYYY.findall(text)
-
 
 def find_money_values(text: str) -> List[float]:
     values: List[float] = []
@@ -42,7 +36,6 @@ def find_money_values(text: str) -> List[float]:
         except ValueError:
             continue
     return values
-
 
 def find_codigo_barras_candidate(text: str) -> str | None:
     compact = re.sub(r"\s+", "", text)

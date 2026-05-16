@@ -1,23 +1,17 @@
 import re
 from typing import Any, Dict
-
 from app.domain.entities.document import Document
 from app.domain.extraction.base import DocumentFieldExtractor
 from app.domain.extraction import text_utils
-from app.infrastructure.logging.logger import get_logger
-
-logger = get_logger(__name__)
 
 _NF_NUMERO = re.compile(
     r"(?:Número\s*(?:da\s*)?(?:NF|nota)?\s*:?\s*|N[º°]\s*|NF\s*-?\s*(?:e|E)?\s+n[º°]\s*)(\d{4,})",
     re.IGNORECASE,
 )
 
-
 class NotaFiscalFieldExtractor(DocumentFieldExtractor):
     async def extract(self, document: Document) -> Dict[str, Any]:
         text = document.extracted_text or ""
-        logger.info("Extraindo campos de nota fiscal a partir do OCR")
 
         numero_m = _NF_NUMERO.search(text)
         numero = numero_m.group(1) if numero_m else None

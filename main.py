@@ -2,11 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config.settings import Settings
 from app.api import routes
-from app.infrastructure.logging.logger import get_logger
 
 # Configurações
 settings = Settings()
-logger = get_logger(__name__)
 
 # Criar aplicação FastAPI
 app = FastAPI(
@@ -28,16 +26,6 @@ app.add_middleware(
 
 # Incluir rotas
 app.include_router(routes.router)
-
-
-@app.on_event("startup")
-async def startup_event():
-    logger.info(f"Iniciando {settings.app_name} v{settings.app_version}")
-
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    logger.info("Encerrando aplicação")
 
 
 @app.get("/")

@@ -3,31 +3,22 @@ from app.domain.ocr.ocr_service import OCRService
 from app.domain.entities.document import Document, DocumentType
 from app.domain.entities.analysis_result import AnalysisResult, AnalysisStatus
 from app.application.pipeline import AnalysisPipeline
-from app.infrastructure.logging.logger import get_logger
-
-logger = get_logger(__name__)
 
 
 class PreAnalysisOrchestrator:
-    """
-    Fluxo: OCR → classificação → extração de campos (texto) → motor de regras.
-    """
-
     def __init__(self):
         self.classifier = DocumentClassifier()
         self.ocr_service = OCRService()
         self.pipeline = AnalysisPipeline()
 
     async def run(self, document: Document) -> AnalysisResult:
-        logger.info(f"Orquestrando pré-análise do documento: {document.id}")
-
         try:
             text = await self.ocr_service.extract_text(document)
             document.extracted_text = text
 
             classification = await self.classifier.classify(document)
             document.type = classification.label
-
+            
             classification_meta = {
                 "classification_confidence": classification.confidence,
                 "classification_reason": classification.reason,
@@ -61,8 +52,8 @@ class PreAnalysisOrchestrator:
                 warnings=result.warnings,
                 metadata=merged_meta,
             )
+
         except Exception as e:
-            logger.error(f"Falha na orquestração do documento {document.id}: {e}")
             dtype = document.type.value if document.type else "unknown"
             return AnalysisResult(
                 document_id=document.id,

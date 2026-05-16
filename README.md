@@ -25,8 +25,7 @@ app/
 │   ├── ocr/
 │   ├── rules_engine/
 │   └── entities/
-├── infrastructure/
-│   └── logging/
+├── infrastructure/    # (opcional: integrações externas)
 └── config/
 tests/
 main.py
@@ -56,7 +55,6 @@ pip install -r requirements.txt
 
 ```env
 DEBUG=false
-LOG_LEVEL=INFO
 ```
 
 4. Subir a API:

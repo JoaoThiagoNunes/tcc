@@ -1,17 +1,11 @@
 from typing import Any, Dict
-
 from app.domain.entities.document import Document
 from app.domain.extraction.base import DocumentFieldExtractor
 from app.domain.extraction import text_utils
-from app.infrastructure.logging.logger import get_logger
-
-logger = get_logger(__name__)
-
 
 class ComprovantePagamentoFieldExtractor(DocumentFieldExtractor):
     async def extract(self, document: Document) -> Dict[str, Any]:
         text = document.extracted_text or ""
-        logger.info("Extraindo campos de comprovante a partir do OCR")
 
         dates = text_utils.find_dates(text)
         valores = text_utils.find_money_values(text)

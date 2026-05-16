@@ -1,8 +1,6 @@
 from typing import Dict, Any, List
 from app.domain.entities.document import Document
-from app.infrastructure.logging.logger import get_logger
 
-logger = get_logger(__name__)
 class NotaFiscalRules:
     async def validate(self, document: Document, extraction_payload: Dict[str, Any]) -> Dict[str, Any]:
         violations = []

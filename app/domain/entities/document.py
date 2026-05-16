@@ -3,7 +3,6 @@ from typing import Optional
 from datetime import datetime
 from enum import Enum
 
-
 class DocumentType(str, Enum):
     NOTA_FISCAL = "nota_fiscal"
     COMPROVANTE_PAGAMENTO = "comprovante_pagamento"

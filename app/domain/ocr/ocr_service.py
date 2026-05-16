@@ -7,9 +7,8 @@ from statistics import mean
 import pytesseract
 from PIL import Image, ImageChops, ImageEnhance, ImageFilter, ImageOps, ImageSequence, ImageStat
 from app.domain.entities.document import Document
-from app.infrastructure.logging.logger import get_logger
 
-logger = get_logger(__name__)
+
 @dataclass
 class OCRQualityProfile:
     width: int
@@ -215,16 +214,7 @@ class OCRService:
     def _ocr_image_file(self, file_path: str, lang: str = "por") -> str:
         collected_texts: list[str] = []
         with Image.open(file_path) as image:
-            frame_count = getattr(image, "n_frames", 1)
-            logger.info(
-                "Processando imagem para OCR: format=%s size=%sx%s frames=%s",
-                image.format,
-                image.width,
-                image.height,
-                frame_count,
-            )
-
-            for frame_index, frame in enumerate(ImageSequence.Iterator(image)):
+            for frame in ImageSequence.Iterator(image):
                 normalized = frame.convert("RGB")
                 profile = self._analyze_image_quality(normalized)
                 strategy = self._decide_pipeline(profile)
@@ -250,36 +240,20 @@ class OCRService:
                         initial_best_score=best_score,
                     )
 
-                logger.info(
-                    "OCR frame=%s strategy=%s confidence=%.2f low_res=%s low_contrast=%s high_noise=%s",
-                    frame_index,
-                    strategy.name,
-                    best_score,
-                    profile.low_resolution,
-                    profile.low_contrast,
-                    profile.high_noise,
-                )
                 collected_texts.append(best_text.strip())
 
         return "\n".join(text for text in collected_texts if text).strip()
 
     async def extract_text(self, document: Document) -> str:
-        try:
-            logger.info(f"Extraindo texto do documento: {document.id}")
+        file_path = Path(document.file_path)
+        if not file_path.exists():
+            raise FileNotFoundError(f"Arquivo não encontrado: {document.file_path}")
 
-            file_path = Path(document.file_path)
-            if not file_path.exists():
-                raise FileNotFoundError(f"Arquivo não encontrado: {document.file_path}")
+        if document.mime_type == "application/pdf":
+            pdf_bytes = file_path.read_bytes()
+            text = self._extract_text_from_pdf(pdf_bytes)
+            if not text:
+                text = self._ocr_pdf_with_pymupdf(pdf_bytes, lang="por")
+            return text
 
-            if document.mime_type == "application/pdf":
-                pdf_bytes = file_path.read_bytes()
-                text = self._extract_text_from_pdf(pdf_bytes)
-                if not text:
-                    text = self._ocr_pdf_with_pymupdf(pdf_bytes, lang="por")
-                return text
-
-            return self._ocr_image_file(document.file_path, lang="por")
-
-        except Exception as e:
-            logger.error(f"Erro ao extrair texto: {str(e)}")
-            raise
+        return self._ocr_image_file(document.file_path, lang="por")

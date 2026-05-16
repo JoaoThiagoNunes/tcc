@@ -4,9 +4,7 @@ import re
 import unicodedata
 from typing import Dict, List
 from app.domain.entities.document import Document, DocumentType
-from app.infrastructure.logging.logger import get_logger
 
-logger = get_logger(__name__)
 @dataclass
 class ClassificationResult:
     label: DocumentType
@@ -205,7 +203,6 @@ class DocumentClassifier:
     async def classify(self, document: Document) -> ClassificationResult:
         try:
             filename = document.filename if isinstance(document.filename, str) else ""
-            logger.info(f"Classificando documento: {filename}")
 
             text = document.extracted_text if isinstance(document.extracted_text, str) else ""
             digits_text = self._extract_digits(text)
@@ -279,7 +276,6 @@ class DocumentClassifier:
             )
 
         except Exception as e:
-            logger.error(f"Erro ao classificar documento: {str(e)}")
             return ClassificationResult(
                 label=DocumentType.UNKNOWN,
                 confidence=0.0,
