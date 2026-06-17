@@ -1,6 +1,3 @@
-"""
-Testes para Document Classifier
-"""
 import pytest
 from app.domain.classifier.document_classifier import DocumentClassifier
 from app.domain.entities.document import Document, DocumentType
@@ -8,7 +5,6 @@ from app.domain.entities.document import Document, DocumentType
 
 @pytest.mark.asyncio
 async def test_classify_nota_fiscal():
-    """Testa classificação de nota fiscal"""
     classifier = DocumentClassifier()
     document = Document(
         id="test-1",
@@ -29,7 +25,6 @@ async def test_classify_nota_fiscal():
 
 @pytest.mark.asyncio
 async def test_classify_comprovante():
-    """Testa classificação de comprovante"""
     classifier = DocumentClassifier()
     document = Document(
         id="test-2",
@@ -47,7 +42,6 @@ async def test_classify_comprovante():
 
 @pytest.mark.asyncio
 async def test_classify_consulta_cnpj():
-    """Testa classificação de consulta CNPJ"""
     classifier = DocumentClassifier()
     document = Document(
         id="test-4",
@@ -65,7 +59,6 @@ async def test_classify_consulta_cnpj():
 
 @pytest.mark.asyncio
 async def test_classify_unknown_ambiguous():
-    """Retorna UNKNOWN quando evidências são ambíguas"""
     classifier = DocumentClassifier()
     document = Document(
         id="test-3",
@@ -87,7 +80,6 @@ async def test_classify_unknown_ambiguous():
 
 @pytest.mark.asyncio
 async def test_classify_ocr_ruim_depende_filename():
-    """Quando OCR vem vazio, usa sinais do nome com baixa/média confiança"""
     classifier = DocumentClassifier()
     document = Document(
         id="test-5",
@@ -105,7 +97,6 @@ async def test_classify_ocr_ruim_depende_filename():
 
 @pytest.mark.asyncio
 async def test_classify_internal_error_returns_unknown():
-    """Falha interna deve retornar UNKNOWN sem explodir exceção"""
     classifier = DocumentClassifier()
     document = Document(
         id="test-6",
