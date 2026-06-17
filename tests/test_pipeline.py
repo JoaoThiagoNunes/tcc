@@ -1,11 +1,7 @@
-"""
-Testes para Pipeline de análise (extração + regras)
-"""
 import pytest
 from app.application.pipeline import AnalysisPipeline
 from app.domain.entities.document import Document, DocumentType
 from app.domain.entities.analysis_result import AnalysisStatus
-
 
 def _build_document(document_type: DocumentType) -> Document:
     return Document(
