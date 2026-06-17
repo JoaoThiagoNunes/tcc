@@ -1,6 +1,3 @@
-"""
-Testes para extrator de Nota Fiscal (texto OCR)
-"""
 import pytest
 from app.domain.extraction.nota_fiscal_extractor import NotaFiscalFieldExtractor
 from app.domain.entities.document import Document, DocumentType
